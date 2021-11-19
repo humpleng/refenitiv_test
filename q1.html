@@ -1,0 +1,85 @@
+<style>
+  body {
+    display: flex;
+  }
+  .firstSection {
+    width: 200px !important;
+  }
+  .secondSection {
+    width: 100%;
+  }
+  @media only screen and (max-width: 600px) {
+    .secondSection {
+      width: 100%;
+      position: fixed;
+      overflow-x: scroll;
+    }
+  }
+  .thirdSection {
+    width: 300px;
+  }
+</style>
+<body>
+  <div class="firstSection">
+    <label for="num">Number</label>
+    <input type="number" name="num" id="num" value="" />
+  </div>
+  <div class="secondSection">
+    <label for="sel">Select</label>
+    <select name="selecter" id="selecter">
+      <option value="isPrime" selected>isPrime</option>
+      <option value="isFibonacci">isFibonacci</option>
+    </select>
+  </div>
+  <div class="thirdSection">
+    <p id="result"></p>
+  </div>
+</body>
+<script>
+  function checkPrime(target) {
+    for (let i = 2; i < target; i++) if (target % i === 0) return false;
+    return true;
+  }
+
+  function checkSqr(target) {
+    return target > 0 && Math.sqrt(target) % 1 === 0;
+  }
+
+  function checkFibo(target) {
+    return (
+      checkSqr(5 * target * target + 4) || checkSqr(5 * target * target - 4)
+    );
+  }
+
+  const numInput = document.getElementById("num");
+  const selector = document.getElementById("selecter");
+  const result = document.getElementById("result");
+  let chk = null;
+  numInput.addEventListener("keyup", (event) => {
+    const regex = new RegExp(
+      "^(0*[1-9][0-9]*(\.[0-9]+)?|0+\.[0-9]*[1-9][0-9]*)$"
+    );
+    const res = regex.test(numInput.value);
+    if (!res) {
+      numInput.value = 1;
+    } else {
+      if (selector.value == "isPrime") {
+        chk = checkPrime(numInput.value);
+      } else {
+        chk = checkFibo(numInput.value);
+      }
+
+      result.innerHTML = chk.toString();
+    }
+  });
+
+  selector.addEventListener("change", (event) => {
+    if (selector.value == "isPrime") {
+      chk = checkPrime(numInput.value);
+    } else {
+      chk = checkFibo(numInput.value);
+    }
+    result.innerHTML = chk.toString();
+
+  });
+</script>

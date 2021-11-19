@@ -1,0 +1,67 @@
+<body>
+  <label for="search">Search</label>
+  <input type="text" name="search" id="search" onkeyup="filtered()" />
+  <table></table>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  const getData = () => {
+    let result = [];
+    result = axios({
+      method: "get",
+      url: "https://api.publicapis.org/categories",
+      responseType: "json",
+    }).then(function (response) {
+      return response.data;
+    });
+    return result;
+  };
+
+  (async () => {
+    const body = document.body,
+      tbl = document.createElement("table");
+      
+    tbl.id = "catTable";
+    tbl.style.width = "100px";
+    tbl.style.border = "1px solid black";
+
+    const data = await getData();
+
+    data.map((ele, id) => {
+      const tr = tbl.insertRow();
+      const td = tr.insertCell();
+      td.appendChild(document.createTextNode(ele));
+      td.style.border = "1px solid black";
+    });
+
+    body.appendChild(tbl);
+  })();
+
+  const filtered = async () => {
+    const searchbox = document.getElementById("search");
+    const data = await getData();
+    let foundArr = [];
+    const regex = new RegExp("(" + searchbox.value + ")+");
+    foundArr = data.filter((element) => element.match(regex));
+
+    if (foundArr.length != 0) {
+      const body = document.body,
+        catTable = document.getElementById("catTable"),
+        tbl = document.createElement("table");
+
+      tbl.id = "catTable";
+      tbl.style.width = "100px";
+      tbl.style.border = "1px solid black";
+      catTable.parentNode.removeChild(catTable);
+
+      foundArr.map((ele) => {
+        const tr = tbl.insertRow();
+        const td = tr.insertCell();
+        td.appendChild(document.createTextNode(ele));
+        td.style.border = "1px solid black";
+      });
+
+      body.appendChild(tbl);
+    }
+  };
+</script>
